@@ -4,10 +4,10 @@ from typing import List
 from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from ..models import Answer, User
-from ..schema import AnswerCreate, AnswerRead, AnswerUpdate
-from ..database import get_session
-from ..routers.auth import get_current_user
+from models import Answer, User
+from schema import AnswerCreate, AnswerRead, AnswerUpdate
+from database import get_session
+from routers.auth import get_current_user
 
 router = APIRouter(
     prefix="/api/answers",
@@ -37,7 +37,7 @@ def read_answers_by_user(user_id: UUID, session: Session = Depends(get_session))
     """
     Récupère toutes les réponses d'un utilisateur spécifique
     """
-    answers = session.exec(select(Answer).where(Answer.users_id == user_id)).all()
+    answers = session.exec(select(Answer).where(Answer.user_id == user_id)).all()
     if not answers:
         raise HTTPException(status_code=404, detail="No answers found for this user")
     return answers
@@ -47,7 +47,7 @@ def create_answer(answer: AnswerCreate, current_user: User = Depends(get_current
     """
     Créer une nouvelle réponse
     """
-    db_answer = Answer(**answer.model_dump())
+    db_answer = Answer(**answer.model_dump(), user_id=current_user.id_user)
     session.add(db_answer)
     session.commit()
     session.refresh(db_answer)
@@ -61,7 +61,9 @@ def update_answer(answer_id: UUID, answer_update: AnswerUpdate, current_user: Us
     answer = session.get(Answer, answer_id)
     if not answer:
         raise HTTPException(status_code=404, detail="Answer not found")
-    update_data = answer_update.dict(exclude_unset=True)
+    if answer.user_id != current_user.id_user:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this answer")
+    update_data = answer_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(answer, key, value)
     session.add(answer)
@@ -77,6 +79,8 @@ def delete_answer(answer_id: UUID, current_user: User = Depends(get_current_user
     answer = session.get(Answer, answer_id)
     if not answer:
         raise HTTPException(status_code=404, detail="Answer not found")
+    if answer.user_id != current_user.id_user:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this answer")
     session.delete(answer)
     session.commit()
     return {"detail": "Answer deleted successfully"}

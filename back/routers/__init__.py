@@ -1,10 +1,10 @@
 ''' Routers de l'application FastAPI '''
 
-from .auth import router as auth_router
-from .questions import router as questions_router
-from .answers import router as answers_router
+from routers.auth import router as auth_router
+from routers.questions import router as questions_router
+from routers.answers import router as answers_router
 
-routes = [
+routers = [
     auth_router,
     questions_router,
     answers_router

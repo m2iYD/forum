@@ -1,13 +1,14 @@
 ''' Module contenant tous les routes pour les questions '''
 
+from __future__ import annotations
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from ..models import Question, User
-from ..schema import QuestionCreate, QuestionRead, QuestionUpdate
-from ..database import get_session
-from .auth import get_current_user
+from models import Question, User
+from schema import QuestionCreate, QuestionRead, QuestionUpdate
+from database import get_session
+from routers.auth import get_current_user
 
 router = APIRouter(
     prefix="/api/questions",
@@ -30,7 +31,7 @@ def read_questions_by_theme(theme_id: UUID,
     """
     Récupère les questions pour un thème spécifique.
     """
-    query = select(Question).where(Question.themes_id == theme_id)
+    query = select(Question).where(Question.theme_id == theme_id)
     questions = session.exec(query).all()
     if not questions:
         raise HTTPException(status_code=404, detail="Aucune question trouvée pour ce thème")
@@ -51,7 +52,7 @@ def read_questions_by_user(user_id: UUID, session: Session = Depends(get_session
     """
     Récupère toutes les questions d'un utilisateur spécifique
     """
-    questions = session.exec(select(Question).where(Question.users_id == user_id)).all()
+    questions = session.exec(select(Question).where(Question.user_id == user_id)).all()
     if not questions:
         raise HTTPException(status_code=404, detail="No questions found for this user")
     return questions
@@ -61,7 +62,7 @@ def create_question(question: QuestionCreate, current_user: User = Depends(get_c
     """
     Créer une nouvelle question
     """
-    db_question = Question(**question.dict())
+    db_question = Question(**question.model_dump(), user_id=current_user.id_user)
     session.add(db_question)
     session.commit()
     session.refresh(db_question)
@@ -75,6 +76,8 @@ def update_question(question_id: UUID, question_update: QuestionUpdate, current_
     question = session.get(Question, question_id)
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
+    if question.user_id != current_user.id_user:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this question")
     update_data = question_update.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(question, key, value)
@@ -91,6 +94,8 @@ def delete_question(question_id: UUID, current_user: User = Depends(get_current_
     question = session.get(Question, question_id)
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
+    if question.user_id != current_user.id_user:
+        raise HTTPException(status_code=403, detail="Not authorized to modify this question")
     session.delete(question)
     session.commit()
     return {"detail": "Question deleted successfully"}

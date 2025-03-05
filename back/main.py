@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
-from .routers import routes
-from .database import engine
+from routers import routers
+from database import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-for route in routes:
+for route in routers:
     app.include_router(route)
 
 # Ajout du middleware CORS

@@ -6,10 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 import jwt
 from passlib.context import CryptContext
 from jwt.exceptions import InvalidTokenError
-from ..models import User
-from ..schema import UserCreate, UserRead, UserLogin, Token, PasswordUpdate
-from ..database import get_session
-
+from models import User
+from schema import UserCreate, UserRead, UserLogin, Token, PasswordUpdate
+from database import get_session
 
 router = APIRouter(
     prefix="/api/auth",
@@ -43,7 +42,7 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
     if existing_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
     hashed_password = get_password_hash(user.password)
-    db_user = User(username=user.username, email=user.email, password_hash=hashed_password)
+    db_user = User(firstname=user.firstname, lastname=user.lastname, email=user.email, password=hashed_password)
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -53,7 +52,7 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
 def login(user: UserLogin, response: Response, session: Session = Depends(get_session)):
     statement = select(User).where(User.email == user.email)
     db_user = session.exec(statement).first()
-    if not db_user or not verify_password(user.password, db_user.password_hash):
+    if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": db_user.email})
     response.set_cookie(
@@ -98,10 +97,10 @@ def get_me(current_user: User = Depends(get_current_user)):
 @router.put("/update-password", response_model=UserRead)
 def update_password(password_update: PasswordUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     # Vérifier que l'ancien mot de passe est correct
-    if not verify_password(password_update.old_password, current_user.password_hash):
+    if not verify_password(password_update.old_password, current_user.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="L'ancien mot de passe est incorrect")
     # Mettre à jour le mot de passe avec le nouveau, haché
-    current_user.password_hash = get_password_hash(password_update.new_password)
+    current_user.password = get_password_hash(password_update.new_password)
     session.add(current_user)
     session.commit()
     session.refresh(current_user)
