@@ -1,3 +1,7 @@
+-- CREATE DATABASE forum;
+
+-- \c forum;
+
 -- Désactiver temporairement les contraintes de clé étrangère
 SET session_replication_role = 'replica';
 
@@ -25,9 +29,9 @@ END $$;
 -- Réactiver les contraintes de clé étrangère
 SET session_replication_role = 'origin';
 
--- Création de la table "user" (mot-clé réservé, donc guillemets)
-CREATE TABLE "user" (
-    id_user UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+-- Création de la table "author" (mot-clé réservé, donc guillemets)
+CREATE TABLE author (
+    id_author UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL CHECK (email = LOWER(email)),
@@ -44,11 +48,11 @@ CREATE TABLE theme (
 CREATE TABLE question (
     id_question UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     content TEXT NOT NULL,
-    user_id UUID NOT NULL,
+    author_id UUID NOT NULL,
     theme_id UUID NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NULL,
-    CONSTRAINT fk_question_user FOREIGN KEY (user_id) REFERENCES "user"(id_user) ON DELETE CASCADE,
+    CONSTRAINT fk_question_author FOREIGN KEY (author_id) REFERENCES author(id_author) ON DELETE CASCADE,
     CONSTRAINT fk_question_theme FOREIGN KEY (theme_id) REFERENCES theme(id_theme) ON DELETE CASCADE
 );
 
@@ -58,18 +62,18 @@ CREATE TABLE answer (
     content TEXT NOT NULL,
     nb_like INTEGER DEFAULT 0 NOT NULL CHECK (nb_like >= 0),
     nb_dislike INTEGER DEFAULT 0 NOT NULL CHECK (nb_dislike >= 0),
-    user_id UUID NOT NULL,
+    author_id UUID NOT NULL,
     question_id UUID NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NULL,
-    CONSTRAINT fk_answer_user FOREIGN KEY (user_id) REFERENCES "user"(id_user) ON DELETE CASCADE,
+    CONSTRAINT fk_answer_author FOREIGN KEY (author_id) REFERENCES author(id_author) ON DELETE CASCADE,
     CONSTRAINT fk_answer_question FOREIGN KEY (question_id) REFERENCES question(id_question) ON DELETE CASCADE
 );
 
 -- Index pour accélérer les requêtes
-CREATE INDEX idx_question_user_id ON question(user_id);
+CREATE INDEX idx_question_author_id ON question(author_id);
 CREATE INDEX idx_question_theme_id ON question(theme_id);
-CREATE INDEX idx_answer_user_id ON answer(user_id);
+CREATE INDEX idx_answer_author_id ON answer(author_id);
 CREATE INDEX idx_answer_question_id ON answer(question_id);
 
 -- Insertion des thèmes
@@ -85,18 +89,18 @@ INSERT INTO theme (id_theme, name) VALUES
     (gen_random_uuid(), 'Sports'),
     (gen_random_uuid(), 'Literature');
 
--- Insertion des utilisateurs (email en lowercase directement)
-INSERT INTO "user" (id_user, firstname, lastname, email, password) VALUES
-    (gen_random_uuid(), 'Alice', 'Dupont', LOWER('alice@example.com'), 'password123'),
-    (gen_random_uuid(), 'Bob', 'Martin', LOWER('bob@example.com'), 'password456'),
-    (gen_random_uuid(), 'Charlie', 'Durand', LOWER('charlie@example.com'), 'password789');
+-- Insertion des auteurs (email en lowercase directement)
+INSERT INTO author (id_author, firstname, lastname, email, password) VALUES
+    (gen_random_uuid(), 'Alice', 'Dupont', LOWER('alice@example.com'), '$2b$12$skfdfKy5S6ikXkQK4SlL4u6uTdEWy0frAj/fQOUUoO1vHil/mkdDm'),
+    (gen_random_uuid(), 'Bob', 'Martin', LOWER('bob@example.com'), '$2b$12$L2t2ixabOCGYYO4Wz3AtMuJT9dUx3ONhUqSCY3026OQ.Azdhf7wxS'),
+    (gen_random_uuid(), 'Charlie', 'Durand', LOWER('charlie@example.com'), '$2b$12$gEtEcyOyS7k09KlKR9vkbe9OzBSL9wIhVVpat3a6A6akzkjVVBn6i');
 
 -- Insertion des questions (par Alice et Bob)
-INSERT INTO question (id_question, content, user_id, theme_id, created_at) 
+INSERT INTO question (id_question, content, author_id, theme_id, created_at) 
 SELECT 
     gen_random_uuid(), 
     q.content, 
-    u.id_user, 
+    a.id_author, 
     t.id_theme, 
     NOW()
 FROM (
@@ -107,17 +111,17 @@ FROM (
         ('When did World War II start?', 'bob@example.com', 'History'),
         ('What is the capital of Australia?', 'bob@example.com', 'Geography'),
         ('Who wrote "War and Peace"?', 'bob@example.com', 'Literature')
-) AS q(content, user_email, theme_name)
-JOIN "user" u ON u.email = q.user_email
+) AS q(content, author_email, theme_name)
+JOIN author a ON a.email = q.author_email
 JOIN theme t ON t.name = q.theme_name;
 
 -- Insertion des réponses (par Charlie)
-INSERT INTO answer (id_answer, content, nb_like, nb_dislike, user_id, question_id, created_at) 
+INSERT INTO answer (id_answer, content, nb_like, nb_dislike, author_id, question_id, created_at) 
 SELECT 
     gen_random_uuid(), 
     a.content, 
     0, 0, 
-    u.id_user, 
+    au.id_author, 
     q.id_question, 
     NOW()
 FROM (
@@ -129,5 +133,5 @@ FROM (
         ('The capital of Australia is Canberra.', 'What is the capital of Australia?'),
         ('"War and Peace" was written by Leo Tolstoy.', 'Who wrote "War and Peace"?')
 ) AS a(content, question_content)
-JOIN "user" u ON u.email = 'charlie@example.com'
+JOIN author au ON au.email = 'charlie@example.com'
 JOIN question q ON q.content = a.question_content;

@@ -10,7 +10,6 @@ from .models import *
 __all__ = [
     "Theme",   # Represents the Theme model, likely used for categorizing or tagging.
     "Question", # Represents the Question model, likely used for forum or survey questions.
-    "User",    # Represents the User model, likely used for user account information.
+    "Author",    # Represents the User model, likely used for user account information.
     "Answer",  # Represents the Answer model, likely used for responses to questions.
-    "Token"    # Represents the Token model, likely used for authentication.
 ]
