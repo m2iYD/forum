@@ -1,6 +1,6 @@
 ''' Module contenant tous les modèles de données de l'application '''
 
-from __future__ import annotations
+
 from typing import Optional, List
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
@@ -38,8 +38,8 @@ class Question(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at: Optional[datetime] = Field(default=None)
 
-    user: "User" = Relationship(back_populates="questions")
-    theme: "Theme" = Relationship(back_populates="questions")
+    user: User = Relationship(back_populates="questions")
+    theme: Theme = Relationship(back_populates="questions")
     answers: List["Answer"] = Relationship(back_populates="question")
 
 
@@ -53,5 +53,5 @@ class Answer(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at: Optional[datetime] = Field(default=None)
 
-    user: "User" = Relationship(back_populates="answers")
-    question: "Question" = Relationship(back_populates="answers")
+    user: User = Relationship(back_populates="answers")
+    question: Question = Relationship(back_populates="answers")
