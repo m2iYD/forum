@@ -1,8 +1,10 @@
+''' Module contenant tous les modèles de données de l'application '''
+
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional
 from uuid import uuid4, UUID
-from pydantic import field_validator
 from datetime import datetime, timezone
+from pydantic import field_validator
 from sqlmodel import SQLModel, Field, Relationship, Column, String, Text, DateTime, Integer
 
 class User(SQLModel, table=True):
@@ -17,15 +19,15 @@ class User(SQLModel, table=True):
     def email_must_be_lowercase(cls, v: str) -> str:
         return v.lower()
 
-    questions: List["Question"] = Relationship(back_populates="user")
-    answers: List["Answer"] = Relationship(back_populates="user")
+    questions: list["Question"] = Relationship(back_populates="user")
+    answers: list["Answer"] = Relationship(back_populates="user")
 
 
 class Theme(SQLModel, table=True):
     id_theme: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(sa_column=Column(String(255), unique=True, nullable=False))
 
-    questions: List["Question"] = Relationship(back_populates="theme")
+    questions: list["Question"] = Relationship(back_populates="theme")
 
 
 class Question(SQLModel, table=True):
@@ -36,9 +38,9 @@ class Question(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(DateTime(timezone=True), nullable=False))
     updated_at: Optional[datetime] = Field(default=None, sa_column=Column(DateTime(timezone=True)))
 
-    user: "User" = Relationship(back_populates="questions")
-    theme: "Theme" = Relationship(back_populates="questions")
-    answers: List["Answer"] = Relationship(back_populates="question")
+    user: User = Relationship(back_populates="questions")
+    theme: Theme = Relationship(back_populates="questions")
+    answers: list["Answer"] = Relationship(back_populates="question")
 
 
 class Answer(SQLModel, table=True):
@@ -51,5 +53,5 @@ class Answer(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(DateTime(timezone=True), nullable=False))
     updated_at: Optional[datetime] = Field(default=None, sa_column=Column(DateTime(timezone=True)))
 
-    user: "User" = Relationship(back_populates="answers")
-    question: "Question" = Relationship(back_populates="answers")
+    user: User = Relationship(back_populates="answers")
+    question: Question = Relationship(back_populates="answers")
