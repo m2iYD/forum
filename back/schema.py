@@ -48,6 +48,9 @@ class ThemeBase(BaseModel):
 class ThemeCreate(ThemeBase):
     pass
 
+class ThemeUpdate(ThemeBase):
+    name: Optional[str] = None
+
 class ThemeRead(ThemeBase):
     id_theme: UUID
 
