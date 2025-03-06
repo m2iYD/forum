@@ -1,3 +1,7 @@
+### Frontend
+.DS_Store
+front/nginx.conf
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
