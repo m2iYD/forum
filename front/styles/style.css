@@ -80,7 +80,7 @@ nav .signout-link {
 }
 
 /* Questions List */
-.questions-list {
+#questions-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
