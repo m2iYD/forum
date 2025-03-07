@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail - QA</title>
+  <link rel="stylesheet" href="styles/detail.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>Question Details</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="new_question.html">New Question</a>
+      <a href="logout.html" id="logoutLink">Sign Out</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="question-detail">
+      <div class="card">
+        <div class="card-header">
+          <h2 id="question-title">How to learn JavaScript?</h2>
+          <p><span class="date">Created on: March 5, 2025</span> | <span class="responses">12 responses</span></p>
+        </div>
+
+        <div class="card-body">
+          <div class="filter-actions">
+            <button class="filter-btn">Sort by Popularity</button>
+            <button class="filter-btn">Sort by Date</button>
+          </div>
+          <h3>Answers</h3>
+          <ul class="answers-list">
+            <li class="answer">
+              <p><strong>John Doe:</strong> To learn JavaScript, start with the basics like variables, loops, and
+                functions. Then move on to more advanced topics like closures and promises.</p>
+            </li>
+            <li class="answer">
+              <p><strong>Jane Smith:</strong> I suggest using online resources like freeCodeCamp or Codecademy. Practice
+                a lot and build small projects.</p>
+            </li>
+            <li class="answer">
+              <p><strong>Sam Lee:</strong> Don't forget about the importance of understanding asynchronous programming!
+                It's key to writing efficient JavaScript code.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 DxY</p>
+  </footer>
+
+  <script src="scripts/question.js"></script>
+</body>
+
+</html>
