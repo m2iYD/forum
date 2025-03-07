@@ -40,6 +40,11 @@ function displayQuestions(questions, theme = "all") {
     questions = questions.filter((q) => q.theme.name === theme);
   }
 
+  if (questions.length === 0) {
+    questionContainer.innerHTML = `<p>No questions found</p>`;
+    return;
+  }
+  
   let html = "";
   questions.forEach((question) => {
     html += `
