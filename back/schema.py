@@ -90,7 +90,7 @@ class QuestionBase(BaseModel):
     theme_id: UUID #utilisation de theme_id
 
 class QuestionCreate(QuestionBase):
-    author_id: UUID #utilisation de author_id
+    pass
 
 class QuestionUpdate(QuestionBase):
     pass

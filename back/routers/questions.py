@@ -82,7 +82,7 @@ def create_question(
     """
     db_question = Question(
         **question.model_dump(), author_id=current_user.id_author
-    )  # Change user_id to author_id
+    )
     session.add(db_question)
     session.commit()
     session.refresh(db_question)

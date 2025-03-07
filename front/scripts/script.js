@@ -71,7 +71,7 @@ function displayQuestions(questions, theme = "all") {
 
 function displayThemes(themes) {
   const themeContainer = document.getElementById("theme");
-  let html = `<option value="all">Choose Theme</option>`;
+  let html = `<option value="all">All themes</option>`;
 
   themes.forEach((theme) => {
     html += `<option value="${theme.name}">${theme.name}</option>`;

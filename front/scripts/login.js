@@ -1,46 +1,37 @@
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const loginData = { email, password };
+    const loginData = {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+    };
 
-  fetch("http://localhost:8001/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(loginData),
-  })
-    .then((response) => {
+    try {
+      const response = await fetch("http://localhost:8001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
+
       if (!response.ok) {
-        throw new Error("Identifiants invalides");
+        throw new Error("Invalid credentials");
       }
 
-      // Récupérer le header Authorization
-      const authHeader = response.headers.get("Authorization");
-      console.log(authHeader);
-      // alert(authHeader);
+      const accessToken = response.headers.get("Authorization")?.split(" ")[1]; // Extraction du token
+      const data = await response.json();
 
-      if (!authHeader) {
-        throw new Error("Access token non trouvé dans les headers");
-      }
-
-      // Extraire uniquement le token (sans "Bearer ")
-      const accessToken = authHeader.split(" ")[1];
-
-      console.log("Access Token:", accessToken);
-      // alert("Access Token: " + accessToken);
-
-      // Stocker le token et rediriger
       localStorage.setItem("access_token", accessToken);
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      console.error("Erreur:", error);
-      // alert("Erreur lors de la connexion.");
-    });
-});
+      localStorage.setItem("user_id", data.id_author);
 
-document.getElementById("gohome").addEventListener("click", async (e) => {
+      window.location.href = "index.html";
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  });
+
+document.getElementById("gohome").addEventListener("click", () => {
   const token = localStorage.getItem("access_token");
   if (token) {
     window.location.href = "index.html";
