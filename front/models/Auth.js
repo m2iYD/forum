@@ -31,7 +31,7 @@ export class Auth {
       })
       .then((data) => {
         // console.log("Utilisateur authentifié :", data);
-        localStorage.setItem("user_id", data.id); // Sauvegarde l'id de l'utilisateur dans le localStorage
+        localStorage.setItem("user_id", data.id_author); // Sauvegarde l'id de l'utilisateur dans le localStorage
         return true;
       })
       .catch((error) => {
