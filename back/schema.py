@@ -48,6 +48,9 @@ class ThemeBase(BaseModel):
 class ThemeCreate(ThemeBase):
     pass
 
+class ThemeUpdate(ThemeBase):
+    name: Optional[str] = None
+
 class ThemeRead(ThemeBase):
     id_theme: UUID
 
@@ -57,23 +60,29 @@ class ThemeRead(ThemeBase):
 # Schémas pour les réponses
 class AnswerBase(BaseModel):
     content: str
+
+class AnswerLike(AnswerBase):
     nb_like: int
     nb_dislike: int
 
 class AnswerCreate(AnswerBase):
-    author_id: UUID #utilisation de author_id
+    author_id: UUID
+    question_id: UUID
 
-class AnswerUpdate(AnswerBase):
+class AnswerUpdate(AnswerLike):
     pass
 
-class AnswerRead(AnswerBase):
+class AnswerRead(AnswerLike):
     id_answer: UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
-    author: Optional[AuthorRead] = None #utilisation de AuthorRead
+    author: Optional[AuthorRead] = None
 
     class Config:
         from_attributes = True
+
+class AnswerCreated(AnswerRead):
+    question_id: UUID
 
 # Schémas pour les questions (forum)
 class QuestionBase(BaseModel):
