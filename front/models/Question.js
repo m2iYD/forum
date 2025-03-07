@@ -51,8 +51,19 @@ export class Question {
 
   // 🔹 Trouver une question par ID via API
   static async findById(id) {
+    const token = localStorage.getItem("access_token");
+
     try {
-      const response = await fetch(`http://localhost:8001/api/questions/${id}`);
+      const response = await fetch(
+        `http://localhost:8001/api/questions/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (!response.ok) throw new Error("Question not found");
       const q = await response.json();
       return new Question(
