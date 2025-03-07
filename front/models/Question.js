@@ -2,16 +2,16 @@ export class Question {
   constructor(
     id_question,
     content,
-    user_id,
-    theme_id,
+    author,
+    theme,
     created_at,
     updated_at,
-    answers = []
+    answers
   ) {
     this.id_question = id_question;
     this.content = content;
-    this.user_id = user_id;
-    this.theme_id = theme_id;
+    this.author = author;
+    this.theme = theme;
     this.created_at = created_at;
     this.updated_at = updated_at;
     this.answers = answers;
@@ -36,8 +36,8 @@ export class Question {
           new Question(
             q.id_question,
             q.content,
-            q.user_id,
-            q.theme_id,
+            q.author,
+            q.theme,
             q.created_at,
             q.updated_at,
             q.answers || []
@@ -58,8 +58,8 @@ export class Question {
       return new Question(
         q.id_question,
         q.content,
-        q.user_id,
-        q.theme_id,
+        q.author,
+        q.theme,
         q.created_at,
         q.updated_at,
         q.answers || []

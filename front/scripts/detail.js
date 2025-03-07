@@ -1,30 +1,57 @@
 import { Answer } from "../models/Answer.js";
+import { Question } from "../models/Question.js";
+import { Theme } from "../models/Theme.js";
+import { Auth } from "../models/Auth.js";
 
-async function loadAnswers() {
-  const answers = await Answer.findAll();
-  console.log("Answers from API:", answers);
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1️⃣ Récupérer l'ID de la question dans l'URL
+  const params = new URLSearchParams(window.location.search);
+  const questionId = params.get("id");
+
+  if (!questionId) {
+    console.error("No question ID found in URL");
+    return;
+  }
+
+  try {
+    // 2️⃣ Récupérer les données de la question via API
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      console.error("Question not found");
+      return;
+    }
+
+    // 3️⃣ Afficher la question dans le DOM
+    displayQuestion(question);
+  } catch (error) {
+    console.error("Error fetching question:", error);
+  }
+});
+
+// Fonction pour afficher la question sur la page
+function displayQuestion(question) {
+  const questionContainer = document.getElementById("question-container");
+
+  if (!questionContainer) return;
+
+  questionContainer.innerHTML = `
+    <div class="question-card">
+      <a href="detail.html?id=${question.id_question}" class="question-link">
+        <div class="question-header">
+          <span class="author">${question.author.firstname} ${
+    question.author.lastname
+  }</span>
+          <span class="date">${new Date(
+            question.created_at
+          ).toLocaleDateString()}</span>
+        </div>
+        <p class="question-content">${question.content}</p>
+        <div class="question-footer">
+          <span class="responses">${question.answers.length} Responses</span>
+          <span class="theme">${question.theme_id}</span>
+        </div>
+      </a>
+    </div>
+  `;
 }
-
-async function loadAnswerById(id) {
-  const answer = await Answer.findById(id);
-  console.log(answer ? `Answer found: ${answer.content}` : "Answer not found!");
-}
-
-async function loadAnswersByQuestion(question_id) {
-  const answers = await Answer.findByQuestionId(question_id);
-  console.log(`Answers for question ${question_id}:`, answers);
-}
-
-// 🔹 Tester avec API
-loadAnswers();
-loadAnswerById(1);
-loadAnswersByQuestion(1);
-
-// 🔹 Tester avec données fictives
-async function testFakeData() {
-  console.log("Fake answers:", await Answer.fakeFindAll());
-  console.log("Fake answer by ID 2:", await Answer.fakeFindById(2));
-  console.log("Fake answers for question ID 1:", await Answer.fakeFindByQuestionId(1));
-}
-
-testFakeData();
