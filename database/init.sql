@@ -1,13 +1,20 @@
--- CREATE DATABASE forum;
+-- Vérifier si la base de données existe déjà
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'forum') THEN
+        PERFORM dblink_exec('dbname=' || current_database(), 'CREATE DATABASE forum');
+    END IF;
+END $$;
 
+-- Connexion à la base de données
 -- \c forum;
 
 -- Désactiver temporairement les contraintes de clé étrangère
 SET session_replication_role = 'replica';
 
 -- Supprimer toutes les tables, vues et séquences
-DO $$ 
-DECLARE 
+DO $$
+DECLARE
     r RECORD;
 BEGIN
     -- Supprimer les tables
@@ -85,91 +92,56 @@ INSERT INTO theme (id_theme, name) VALUES
     (gen_random_uuid(), 'Geography'),
     (gen_random_uuid(), 'Literature');
 
--- Insertion des auteurs (email en lowercase directement)
+-- Insertion des auteurs avec des données prédéfinies
 INSERT INTO author (id_author, firstname, lastname, email, password) VALUES
-    (gen_random_uuid(), 'Alice', 'Dupont', LOWER('alice@example.com'), '$2b$12$skfdfKy5S6ikXkQK4SlL4u6uTdEWy0frAj/fQOUUoO1vHil/mkdDm'),
-    (gen_random_uuid(), 'Bob', 'Martin', LOWER('bob@example.com'), '$2b$12$L2t2ixabOCGYYO4Wz3AtMuJT9dUx3ONhUqSCY3026OQ.Azdhf7wxS'),
-    (gen_random_uuid(), 'Charlie', 'Durand', LOWER('charlie@example.com'), '$2b$12$gEtEcyOyS7k09KlKR9vkbe9OzBSL9wIhVVpat3a6A6akzkjVVBn6i');
+    (gen_random_uuid(), 'Alice', 'Dupont', LOWER('alice@example.com'), '$2b$12$skfdfKy5S6ikXkQK4SlL4u6uTdEWy0frAj/fQOUUoO1vHil/mkdDm'), -- alice
+    (gen_random_uuid(), 'Bob', 'Martin', LOWER('bob@example.com'), '$2b$12$L2t2ixabOCGYYO4Wz3AtMuJT9dUx3ONhUqSCY3026OQ.Azdhf7wxS'), -- bob
+    (gen_random_uuid(), 'Charlie', 'Durand', LOWER('charlie@example.com'), '$2b$12$gEtEcyOyS7k09KlKR9vkbe9OzBSL9wIhVVpat3a6A6akzkjVVBn6i'), -- charlie
+    (gen_random_uuid(), 'David', 'Lefevre', LOWER('david@example.com'), '$2b$12$1234567890abcdefghijkl'), -- david
+    (gen_random_uuid(), 'Eve', 'Moreau', LOWER('eve@example.com'), '$2b$12$1234567890abcdefghijkl'), -- eve
+    (gen_random_uuid(), 'Frank', 'Girard', LOWER('frank@example.com'), '$2b$12$1234567890abcdefghijkl'), -- frank
+    (gen_random_uuid(), 'Grace', 'Hubert', LOWER('grace@example.com'), '$2b$12$1234567890abcdefghijkl'), -- grace
+    (gen_random_uuid(), 'Heidi', 'Lemaire', LOWER('heidi@example.com'), '$2b$12$1234567890abcdefghijkl'), -- heidi
+    (gen_random_uuid(), 'Ivan', 'Noel', LOWER('ivan@example.com'), '$2b$12$1234567890abcdefghijkl'), -- ivan
+    (gen_random_uuid(), 'Judy', 'Perrin', LOWER('judy@example.com'), '$2b$12$1234567890abcdefghijkl'); -- judy
 
--- Insertion des questions (par Alice et Bob)
-INSERT INTO question (id_question, content, author_id, theme_id, created_at) 
-SELECT 
-    gen_random_uuid(), 
-    q.content, 
-    a.id_author, 
-    t.id_theme, 
+-- Insertion des questions avec des données aléatoires
+INSERT INTO question (id_question, content, author_id, theme_id, created_at)
+SELECT
+    gen_random_uuid(),
+    'Question ' || md5(random()::text), -- Contenu aléatoire
+    a.id_author,
+    (SELECT id_theme FROM theme ORDER BY RANDOM() LIMIT 1), -- Thème aléatoire
+    NOW()
+FROM
+    author a,
+    generate_series(1, 3) AS q(i); -- 3 questions par auteur
+
+-- Insertion des réponses avec des données aléatoires
+INSERT INTO answer (id_answer, content, nb_like, nb_dislike, author_id, question_id, created_at)
+SELECT
+    gen_random_uuid(),
+    'Answer ' || md5(random()::text), -- Contenu aléatoire
+    floor(random() * 10) AS nb_like, -- Nombre aléatoire de likes
+    floor(random() * 5) AS nb_dislike, -- Nombre aléatoire de dislikes
+    subquery.author_id, -- Utilisation correcte de l'alias
+    subquery.id_question,
     NOW()
 FROM (
-    VALUES 
-        ('What is the theory of relativity?', 'alice@example.com', 'Science'),
-        ('Who invented the telephone?', 'alice@example.com', 'Technology'),
-        ('What is Pythagoras'' theorem?', 'alice@example.com', 'Mathematics'),
-        ('When did World War II start?', 'bob@example.com', 'History'),
-        ('What is the capital of Australia?', 'bob@example.com', 'Geography'),
-        ('Who wrote "War and Peace"?', 'bob@example.com', 'Literature'),
-        ('What is the speed of light?', 'alice@example.com', 'Science'),
-        ('How does a computer work?', 'alice@example.com', 'Technology'),
-        ('What is the value of pi?', 'alice@example.com', 'Mathematics'),
-        ('Who was the first president of the USA?', 'bob@example.com', 'History'),
-        ('What are the major rivers in Europe?', 'bob@example.com', 'Geography'),
-        ('Who wrote "The Odyssey"?', 'bob@example.com', 'Literature'),
-        ('What is a black hole?', 'alice@example.com', 'Science'),
-        ('What is artificial intelligence?', 'alice@example.com', 'Technology'),
-        ('What are prime numbers?', 'alice@example.com', 'Mathematics'),
-        ('Who was Julius Caesar?', 'bob@example.com', 'History'),
-        ('What are the highest mountains in the world?', 'bob@example.com', 'Geography'),
-        ('Who wrote "Hamlet"?', 'bob@example.com', 'Literature')
-) AS q(content, author_email, theme_name)
-JOIN author a ON a.email = q.author_email
-JOIN theme t ON t.name = q.theme_name;
-
--- Insertion des réponses (par Charlie)
-INSERT INTO answer (id_answer, content, nb_like, nb_dislike, author_id, question_id, created_at) 
-SELECT 
-    gen_random_uuid(), 
-    a.content, 
-    0, 0, 
-    au.id_author, 
-    q.id_question, 
-    NOW()
-FROM (
-    VALUES 
-        ('The theory of relativity was developed by Albert Einstein.', 'What is the theory of relativity?'),
-        ('The telephone was invented by Alexander Graham Bell.', 'Who invented the telephone?'),
-        ('Pythagoras'' theorem states that a² + b² = c².', 'What is Pythagoras'' theorem?'),
-        ('World War II started in 1939.', 'When did World War II start?'),
-        ('The capital of Australia is Canberra.', 'What is the capital of Australia?'),
-        ('"War and Peace" was written by Leo Tolstoy.', 'Who wrote "War and Peace"?'),
-        ('The speed of light is approximately 299,792,458 meters per second.', 'What is the speed of light?'),
-        ('A computer works by processing information using a central processing unit (CPU) and memory.', 'How does a computer work?'),
-        ('The value of pi is approximately 3.14159.', 'What is the value of pi?'),
-        ('The first president of the USA was George Washington.', 'Who was the first president of the USA?'),
-        ('The major rivers in Europe include the Danube, Rhine, and Volga.', 'What are the major rivers in Europe?'),
-        ('"The Odyssey" was written by Homer.', 'Who wrote "The Odyssey"?'),
-        ('A black hole is a region of spacetime where gravity is so strong that nothing—not even light—can escape it.', 'What is a black hole?'),
-        ('Artificial intelligence is intelligence demonstrated by machines, unlike the natural intelligence displayed by humans and animals.', 'What is artificial intelligence?'),
-        ('Prime numbers are numbers that have only two distinct factors: 1 and themselves.', 'What are prime numbers?'),
-        ('Julius Caesar was a Roman general and statesman who played a critical role in the events that led to the demise of the Roman Republic and the rise of the Roman Empire.', 'Who was Julius Caesar?'),
-        ('The highest mountains in the world are in the Himalayas, including Mount Everest.', 'What are the highest mountains in the world?'),
-        ('Hamlet was written by William Shakespeare.', 'Who wrote "Hamlet"?'),
-        ('E = mc²', 'What is the theory of relativity?'),
-        ('Antonio Meucci', 'Who invented the telephone?'),
-        ('The square of the hypotenuse is equal to the sum of the squares of the other two sides.', 'What is Pythagoras'' theorem?'),
-        ('September 1, 1939', 'When did World War II start?'),
-        ('Canberra', 'What is the capital of Australia?'),
-        ('Leo Tolstoy', 'Who wrote "War and Peace"?'),
-        ('Approximately 300,000 kilometers per second', 'What is the speed of light?'),
-        ('By executing instructions stored in its memory', 'How does a computer work?'),
-        ('3.14159', 'What is the value of pi?'),
-        ('George Washington', 'Who was the first president of the USA?'),
-        ('Danube, Rhine, Volga', 'What are the major rivers in Europe?'),
-        ('Homer', 'Who wrote "The Odyssey"?'),
-        ('A region of spacetime with strong gravitational effects', 'What is a black hole?'),
-        ('Intelligence demonstrated by machines', 'What is artificial intelligence?'),
-        ('Numbers divisible only by 1 and themselves', 'What are prime numbers?'),
-        ('Roman general and statesman', 'Who was Julius Caesar?'),
-        ('Mount Everest, K2, Kangchenjunga', 'What are the highest mountains in the world?'),
-        ('William Shakespeare', 'Who wrote "Hamlet"?')
-) AS a(content, question_content)
-JOIN author au ON au.email = 'charlie@example.com'
-JOIN question q ON q.content = a.question_content;
+    SELECT
+        q.id_question,
+        a.id_author AS author_id, -- Alias pour id_author
+        (CASE
+            WHEN random() < 0.2 THEN 0
+            WHEN random() < 0.5 THEN 1
+            WHEN random() < 0.7 THEN 2
+            WHEN random() < 0.9 THEN 3
+            ELSE 4
+        END) + 1 AS num_answers -- Nombre aléatoire de réponses entre 1 et 5
+    FROM
+        question q
+    JOIN
+        author a ON a.id_author = q.author_id
+) AS subquery
+JOIN
+    generate_series(1, subquery.num_answers) AS r(i) ON true;
