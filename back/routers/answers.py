@@ -4,8 +4,8 @@ from typing import List
 from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from models import Answer, Author
-from schema import AnswerCreate, AnswerRead, AnswerUpdate
+from models import Answer, Author, Question
+from schema import AnswerCreate, AnswerRead, AnswerUpdate, AnswerCreated
 from database import get_session
 from routers.auth import get_current_user
 
@@ -42,12 +42,16 @@ def read_answers_by_author(author_id: UUID, session: Session = Depends(get_sessi
         raise HTTPException(status_code=404, detail="No answers found for this author")
     return answers
 
-@router.post("/", response_model=AnswerRead)
+@router.post("/", response_model=AnswerCreated)
 def create_answer(answer: AnswerCreate, current_user: Author = Depends(get_current_user), session: Session = Depends(get_session)):
     """
     Créer une nouvelle réponse
     """
-    db_answer = Answer(**answer.model_dump(), author_id=current_user.id_author)
+    question= session.get(Question, answer.question_id)
+    if not question:
+        raise HTTPException(status_code=400, detail="Question not found")
+
+    db_answer = Answer(**answer.model_dump())
     session.add(db_answer)
     session.commit()
     session.refresh(db_answer)
