@@ -39,3 +39,10 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       // alert("Erreur lors de la connexion.");
     });
 });
+
+document.getElementById("gohome").addEventListener("click", async (e) => {
+  const token = localStorage.getItem("access_token");
+  if (token) {
+    window.location.href = "index.html";
+  }
+});
