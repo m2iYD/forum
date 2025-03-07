@@ -1,13 +1,72 @@
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mon Application</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="app.js"></script>
-  </body>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - QA</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>Questions</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="new_question.html" class="new-question">New Question</a>
+      <a href="login.html" id="logoutLink">Sign Out</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="actions">
+      <button class="filter-btn">Newest</button>
+      <button class="filter-btn">Most Answered</button>
+      <button class="filter-btn">Unanswered</button>
+    </div>
+
+    <div id="questions-list">
+      <div class="question-card">
+        <h2>
+          <a href="detail.html?id=3fa85f64-5717-4562-b3fc-2c963f66afa6">string</a>
+        </h2>
+        <p>Theme: <span class="theme">string</span></p>
+        <p>Author: <span class="author">string string</span></p>
+        <p>Email: <span class="email">user@example.com</span></p>
+        <p>Created on: <span class="date">March 7, 2025</span></p>
+        <p>Responses: <span class="responses">0</span></p>
+      </div>
+
+
+      <div class="question-card">
+        <h2>
+          <a href="detail.html?id=3fa85f64-5717-4562-b3fc-2c963f66afa6">string</a>
+        </h2>
+        <p>Theme: <span class="theme">string</span></p>
+        <p>Author: <span class="author">string string</span></p>
+        <p>Email: <span class="email">user@example.com</span></p>
+        <p>Created on: <span class="date">March 7, 2025</span></p>
+        <p>Updated on: <span class="date">March 7, 2025</span></p>
+        <p>Responses: <span class="responses">0</span></p>
+      </div>
+
+
+      <div class="question-card">
+        <h2><a href="detail.html?id=3">How does the event loop work?</a></h2>
+        <p>Created on: <span class="date">February 28, 2025</span></p>
+        <p>Responses: <span class="responses">5</span></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 DxY</p>
+  </footer>
+
+  <script src="scripts/auth.js"></script>
+  <script type="module" src="scripts/script.js"></script>
+  <script src="scripts/logout.js"></script>
+</body>
+
 </html>

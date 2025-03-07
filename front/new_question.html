@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Question - QA</title>
+  <link rel="stylesheet" href="styles/new_question.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>New Question Form</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html" id="logoutLink">Sign Out</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="new-question-section">
+      <form id="newQuestionForm">
+        <label for="content">Content:</label>
+        <input type="text" name="content" rows="5" placeholder="Write your question" id="content">
+
+        <label for="theme">Tags (optional):</label>
+        <select id="theme" name="theme" required>
+          <option value="">Choose a tag</option>
+          <option value="javascript">JavaScript</option>
+          <option value="css">CSS</option>
+          <option value="html">HTML</option>
+          <option value="react">React</option>
+          <option value="vue">Vue.js</option>
+          <option value="node">Node.js</option>
+          <!-- Add more tags as needed -->
+        </select>
+
+        <div class="flex-center">
+          <button type="submit">Publish Question</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 DxY</p>
+  </footer>
+
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/new_question.js"></script>
+</body>
+
+</html>
