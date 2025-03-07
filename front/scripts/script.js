@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const questionsList = document.getElementById("questions-list");
   const themeContainer = document.getElementById("theme");
+  const sortByPopularityButton = document.getElementById("sort-by-popularity");
 
   try {
     if (!Array.isArray(allThemes)) {
@@ -32,44 +33,71 @@ document.addEventListener("DOMContentLoaded", async () => {
   themeContainer.addEventListener("change", async (event) => {
     displayQuestions(allQuestions, event.target.value);
   });
+
+  sortByPopularityButton.addEventListener("click", () => {
+    sortByPopularity(allQuestions);
+  });
 });
 
-function displayQuestions(questions, theme = "all") {
+function displayQuestions(questions, theme = "all", sortBy = "date") {
+  // Added sortBy parameter
   const questionContainer = document.getElementById("questions-list");
+  let filteredQuestions = questions;
+
   if (theme !== "all") {
-    questions = questions.filter((q) => q.theme.name === theme);
+    filteredQuestions = questions.filter((q) => q.theme.name === theme);
   }
 
-  if (questions.length === 0) {
-    questionContainer.innerHTML = `<p>No questions found</p>`;
+  if (sortBy === "date") {
+    filteredQuestions.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+  } else if (sortBy === "popularity") {
+    filteredQuestions.sort((a, b) => b.answers.length - a.answers.length);
+  }
+
+  if (filteredQuestions.length === 0) {
+    questionContainer.innerHTML = `<div class="question-card empty-card">
+    <div class="question-header">
+        <span class="author">Aucun Auteur</span>
+        <span class="date">Date Inconnue</span>
+    </div>
+    <p class="content">Aucune question disponible pour le moment.</p>
+    <div class="question-footer">
+        <span class="responses">Réponses: 0</span>
+        <span class="theme">Thème Inconnu</span>
+    </div>
+</div>`;
     return;
   }
-  
-  let html = "";
-  questions.forEach((question) => {
-    html += `
-      <a href="detail.html?id=${question.id_question}" class="question-card">
-        <div class="question-header">
-          <span class="author">${
-            question.author.lastname + " " + question.author.firstname
-          }</span>
-          <span class="date">${new Date(question.updated_at).toLocaleDateString(
-            "en-US",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }
-          )}</span>
-        </div>
-        <p class="content">${question.content}</p>
-        <div class="question-footer">
-          <span class="responses">Responses: ${question.answers.length}</span>
-          <span class="theme">${question.theme.name}</span>
-        </div>
-      </a>
 
-      `;
+  let html = "";
+  filteredQuestions.forEach((question) => {
+    html += `
+            <a href="detail.html?id=${
+              question.id_question
+            }" class="question-card">
+                <div class="question-header">
+                    <span class="author">${
+                      question.author.lastname + " " + question.author.firstname
+                    }</span>
+                    <span class="date">${new Date(
+                      question.updated_at
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}</span>
+                </div>
+                <p class="content">${question.content}</p>
+                <div class="question-footer">
+                    <span class="responses">Responses: ${
+                      question.answers.length
+                    }</span>
+                    <span class="theme">${question.theme.name}</span>
+                </div>
+            </a>
+        `;
   });
   questionContainer.innerHTML = html;
 }
@@ -82,4 +110,15 @@ function displayThemes(themes) {
     html += `<option value="${theme.name}">${theme.name}</option>`;
   });
   themeContainer.innerHTML = html;
+}
+
+function sortByPopularity(questions) {
+  const theme = document.getElementById("theme").value;
+  let filteredQuestions = questions;
+
+  if (theme !== "all") {
+    filteredQuestions = questions.filter((q) => q.theme.name === theme);
+  }
+
+  displayQuestions(filteredQuestions, theme, "popularity"); // Call displayQuestions with sortBy parameter
 }

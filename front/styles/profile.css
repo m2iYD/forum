@@ -44,6 +44,7 @@ nav a {
 nav a:hover {
     text-decoration: underline;
     color: #ffdd57;
+    cursor: pointer;
 }
 
 /* Formulaire de profil */
