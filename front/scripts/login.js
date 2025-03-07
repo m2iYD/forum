@@ -18,7 +18,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       // Récupérer le header Authorization
       const authHeader = response.headers.get("Authorization");
       console.log(authHeader);
-      alert(authHeader);
+      // alert(authHeader);
 
       if (!authHeader) {
         throw new Error("Access token non trouvé dans les headers");
@@ -32,7 +32,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 
       // Stocker le token et rediriger
       localStorage.setItem("access_token", accessToken);
-      // window.location.href = "index.html";
+      window.location.href = "index.html";
     })
     .catch((error) => {
       console.error("Erreur:", error);

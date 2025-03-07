@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -63,7 +63,7 @@ nav .new-question:hover {
   background: #218838;
 }
 
-nav .signout-link {
+nav #logoutLink {
   color: #dc3545;
   font-size: 16px;
   font-weight: 500;

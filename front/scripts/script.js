@@ -1,35 +1,40 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("access_token");
+import { Question } from "../models/Question.js";
+import { Theme } from "../models/Theme.js";
 
-  fetch("http://localhost:8001/api/questions", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          `Erreur HTTP ${response.status} - ${response.statusText}`
-        );
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (!Array.isArray(data)) {
-        throw new Error("Données reçues invalides");
-      }
-      displayQuestions(data);
-    })
-    .catch((error) => {
-      console.error("Erreur lors du chargement des questions:", error);
+document.addEventListener("DOMContentLoaded", async () => {
+  const allQuestions = await Question.findAll();
+  console.log(allQuestions);
+  const allThemes = await Theme.findAll();
+  console.log(allThemes);
+  // fetch("http://localhost:8001/api/questions", {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization: "Bearer " + token,
+  //   },
+  // })
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `Erreur HTTP ${response.status} - ${response.statusText}`
+  //       );
+  //     }
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     if (!Array.isArray(data)) {
+  //       throw new Error("Données reçues invalides");
+  //     }
+  //     displayQuestions(data);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Erreur lors du chargement des questions:", error);
 
-      const questionsList = document.getElementById("questions-list");
-      if (questionsList) {
-        questionsList.innerHTML = `<p>Erreur de chargement des questions : ${error.message}</p>`;
-      }
-    });
+  //     const questionsList = document.getElementById("questions-list");
+  //     if (questionsList) {
+  //       questionsList.innerHTML = `<p>Erreur de chargement des questions : ${error.message}</p>`;
+  //     }
+  //   });
 });
 
 function displayQuestions(questions) {

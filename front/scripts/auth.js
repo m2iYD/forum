@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("access_token");
-  alert("TOKEN: " + token);
+  // alert("TOKEN: " + token);
   if (!token) {
     window.location.href = "login.html";
     return;
@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      console.log("Utilisateur authentifié :", data);
+      // console.log("Utilisateur authentifié :", data);
 
-      localStorage.setItem("user_id", data.id);
+      localStorage.setItem("user_id", data.id_author);
     })
     .catch((error) => {
       console.error("Erreur d'authentification :", error);

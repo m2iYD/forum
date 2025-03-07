@@ -6,11 +6,19 @@ export class Theme {
 
   // 🔹 Récupérer tous les thèmes via API
   static async findAll() {
+    const token = localStorage.getItem("access_token");
+
     try {
-      const response = await fetch("http://localhost:8001/themes");
+      const response = await fetch("http://localhost:8001/api/themes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
       if (!response.ok) throw new Error("Failed to fetch themes");
       const themes = await response.json();
-      return themes.map(t => new Theme(t.id_theme, t.name));
+      return themes.map((t) => new Theme(t.id_theme, t.name));
     } catch (error) {
       console.error("Error fetching themes:", error);
       return [];
@@ -20,7 +28,7 @@ export class Theme {
   // 🔹 Trouver un thème par ID via API
   static async findById(id) {
     try {
-      const response = await fetch(`http://localhost:8001/themes/${id}`);
+      const response = await fetch(`http://localhost:8001/api/themes/${id}`);
       if (!response.ok) throw new Error("Theme not found");
       const t = await response.json();
       return new Theme(t.id_theme, t.name);
@@ -45,7 +53,6 @@ export class Theme {
   // 🔹 Fake function: Trouver un thème par ID (Données fictives)
   static async fakeFindById(id) {
     const themes = await Theme.fakeFindAll();
-    return themes.find(theme => theme.id_theme === id) || null;
+    return themes.find((theme) => theme.id_theme === id) || null;
   }
-
 }
