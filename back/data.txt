@@ -1,5 +1,0 @@
-{
-  "content": "lorem ipsum",
-  "author_id": "f7ac0fa1-f894-479a-b43a-ae1a8a6a3cb8",
-  "question_id": "3f410e0f-a2c8-4aeb-90da-db97c0470ef9"
-}
