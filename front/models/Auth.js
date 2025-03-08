@@ -30,7 +30,7 @@ export class Auth {
         return response.json();
       })
       .then((data) => {
-        // console.log("Utilisateur authentifié :", data);
+
         localStorage.setItem("user_id", data.id_author); // Sauvegarde l'id de l'utilisateur dans le localStorage
         return true;
       })

@@ -59,13 +59,13 @@ function displayQuestions(questions, theme = "all", sortBy = "date") {
   if (filteredQuestions.length === 0) {
     questionContainer.innerHTML = `<div class="question-card empty-card">
     <div class="question-header">
-        <span class="author">Aucun Auteur</span>
-        <span class="date">Date Inconnue</span>
+        <span class="author"></span>
+        <span class="date"></span>
     </div>
     <p class="content">Aucune question disponible pour le moment.</p>
     <div class="question-footer">
-        <span class="responses">Réponses: 0</span>
-        <span class="theme">Thème Inconnu</span>
+        <span class="responses"></span>
+        <span class="theme"></span>
     </div>
 </div>`;
     return;

@@ -19,8 +19,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const themes = await Theme.findAll();
 
-    console.log("Received themes:", themes);
-
     if (!Array.isArray(themes)) {
       throw new Error("Invalid data received");
     }
