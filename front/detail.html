@@ -1,51 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Question Details - QA</title>
+    <link rel="stylesheet" href="styles/detail.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Question Details - QA</title>
-  <link rel="stylesheet" href="styles/detail.css">
-</head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <h1>Question Details</h1>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="new_question.html" class="nav-link new-question"
+            >New Question</a
+          >
+          <a href="logout.html" class="nav-link logout" id="logoutLink"
+            >Sign Out</a
+          >
+        </nav>
+      </div>
+    </header>
 
-<body>
+    <main class="container">
+      <section id="question-detail">
+        <article id="quest" class="card question-card"></article>
 
-  <header class="header">
-    <div class="container">
-      <h1>Question Details</h1>
-      <nav class="nav">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="new_question.html" class="nav-link new-question">New Question</a>
-        <a href="logout.html" class="nav-link logout" id="logoutLink">Sign Out</a>
-      </nav>
-    </div>
-  </header>
+        <aside class="filter-actions">
+          <button class="filter-btn sort-popularity">Sort by Popularity</button>
+          <button class="filter-btn sort-date">Sort by Date</button>
+        </aside>
 
-  <main class="container">
-    <section id="question-detail">
-      <article id="quest" class="card question-card">
-
-      </article>
-
-      <aside class="filter-actions">
-        <button class="filter-btn sort-popularity">Sort by Popularity</button>
-        <button class="filter-btn sort-date">Sort by Date</button>
-      </aside>
-
-      <section class="answers-section">
-        <h3>Answers</h3>
-        <ul id="answers-list">
-
-        </ul>
+        <section class="answers-section">
+          <h3>Answers</h3>
+          <ul id="answers-list"></ul>
+        </section>
       </section>
-    </section>
-  </main>
+    </main>
 
-  <footer class="footer">
-    <p>&copy; 2025 DxY</p>
-  </footer>
+    <footer class="footer">
+      <p>&copy; 2025 DxY</p>
+    </footer>
 
-  <script type="module" src="scripts/detail.js"></script>
-</body>
-
+    <script type="module" src="scripts/detail.js"></script>
+  </body>
 </html>
