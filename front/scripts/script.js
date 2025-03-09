@@ -1,5 +1,5 @@
 import { Question } from "../models/Question.js";
-import { Theme } from "../models/Theme.js";
+import { Theme } from "../models/Theme.js/index.js";
 import { Auth } from "../models/Auth.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
