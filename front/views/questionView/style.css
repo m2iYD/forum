@@ -1,45 +1,116 @@
-/* Styles pour la page d'accueil */
-.home-page {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .home-page h1 {
-    color: #333;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  
-  .content {
-    background: white;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .content p {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 30px;
-  }
-  
-  /* Section des produits à la une */
-  .featured-products {
-    margin-top: 40px;
-  }
-  
-  .featured-products h2 {
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  /* Réutilisation de la grille de produits du style global */
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
-  }
-  
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+/* Theme Filter */
+label[for="theme"] {
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: block;
+  color: #333;
+  margin-top: 2rem;
+}
+
+select#theme {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  max-width: fit-content;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+select#theme option {
+  padding: 10px;
+}
+
+#sort-by-popularity {
+  padding: 10px;
+  border-radius: 15px;
+  border: none;
+  background-color: rgba(0, 191, 255, 0.24);
+}
+
+#sort-by-popularity:hover {
+  cursor: pointer;
+  background-color: rgba(0, 191, 255, 0.514);
+  border: 1px solid black;
+}
+
+/* Questions List */
+#questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 500px;
+  max-width: 800px;
+}
+
+p {
+  margin-top: 10px;
+}
+
+/* Question Card Styles */
+.question-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 250px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.question-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.author {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.date {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.content {
+  flex-grow: 1;
+  font-size: 14px;
+  margin: 0 auto;
+  width: 80%;
+  text-align: center;
+}
+
+.question-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.responses {
+  color: #28a745;
+}
+
+.theme {
+  font-weight: bold;
+  color: #47505a;
+}

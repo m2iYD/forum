@@ -3,6 +3,7 @@
  */
 import { HomeController } from "./controllers/homeController.js";
 import { QuestionController } from "./controllers/questionController.js";
+import { DetailController } from "./controllers/detailController.js";
 // import { ProductController } from "./controllers/productController.js";
 // import { ErrorController } from "./controllers/errorController.js";
 
@@ -19,6 +20,8 @@ export class Router {
     this.routes = [
       { path: "/", controller: HomeController },
       { path: "/questions", controller: QuestionController },
+      { path: "/questions/:id", controller: DetailController },
+      
       // { path: "/products", controller: ProductController },
       // { path: "/products/:id", controller: ProductController },
       // { path: "/404", controller: ErrorController },

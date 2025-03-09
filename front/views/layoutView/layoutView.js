@@ -8,6 +8,19 @@ export class BaseLayout {
   constructor() {
     this.header = new HeaderView();
     this.footer = new FooterView();
+    this.loadStyles();
+  }
+
+  /**
+   * Charge les styles spécifiques au layout, en évitant les doublons
+   */
+  loadStyles() {
+    if (!document.querySelector('link[href*="layout.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/views/layoutView/style.css";
+      document.head.appendChild(link);
+    }
   }
 
   /**

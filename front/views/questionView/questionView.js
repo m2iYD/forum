@@ -30,13 +30,14 @@ export class QuestionView {
   render(featureQuestions, featureThemes) {
     return `
             <div class="home-page container page-transition">
-                <h1>Bienvenue sur notre site</h1>
-                <div class="content card">                  
-                    <label for="theme">Filter by Theme:</label>
-                    <select id="theme" name="theme" required>
-                        ${renderFeaturedThemes(featureThemes)}
-                    </select>
-                    <button id="sort-by-popularity">Trier par popularité</button>
+                <div class="content-card">
+                <label for="theme">Filter by Theme :</label>
+                    <div class="card-header">                  
+                      <select id="theme" name="theme" required>
+                          ${renderFeaturedThemes(featureThemes)}
+                      </select>
+                      <button id="sort-by-popularity">Trier par popularité</button>
+                    </div>
                     <div id="questions-list">
                         ${renderFeaturedQuestions(featureQuestions)}
                     </div>

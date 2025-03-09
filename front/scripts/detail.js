@@ -32,30 +32,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Fonction pour afficher la question sur la page
+// Function to display the question on the page
 function displayQuestion(question) {
   const questionContainer = document.getElementById("quest");
+  const { author, updated_at, content, answers, theme } = question;
+
   questionContainer.innerHTML = `
-      <div class="card-header">
-        <span class="author">${question.author.lastname} ${
-    question.author.firstname
-  }</span>
-        <span class="date">${new Date(question.updated_at).toLocaleDateString(
-          "en-US",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }
-        )}</span>
-      </div>
-      <div class="card-body">
-        <p class="question-title">${question.content}</p>
-      </div>
-      <div class="card-footer">
-        <span class="responses">${question.answers.length} responses</span>
-        <span class="theme">${question.theme.name}</span>
-      </div>
+    <div class="card-header">
+      <span class="author">${author.lastname} ${author.firstname}</span>
+      <span class="date">${new Date(updated_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}</span>
+    </div>
+    <div class="card-body">
+      <p class="question-title">${content}</p>
+    </div>
+    <div class="card-footer">
+      <span class="responses">${answers.length} responses</span>
+      <span class="theme">${theme.name}</span>
+    </div>
   `;
 }
 

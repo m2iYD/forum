@@ -24,8 +24,9 @@ export class HomeView {
    */
   render() {
     return `
-            <div class="home-page container page-transition">
-                <h1>Welcome to our site, where you can ask and answer questions</h1>
+            <div class="home-page">
+                <h1>Welcome to our site,<br> where you can ask and answer questions.</h1>
+                <p>To start asking and answering questions, <a href="/login">Sign in</a> or <a href="/register">Register</a></p>
             </div>
         `;
   }

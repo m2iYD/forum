@@ -4,7 +4,7 @@ import { BaseLayout } from "../views/layoutView/layoutView.js";
 import { QuestionView } from "../views/questionView/questionView.js";
 
 /**
- * Contrôleur pour la page d'accueil
+ * Contrôleur pour la page des questions
  */
 export class QuestionController {
   constructor(app, params) {
@@ -17,7 +17,7 @@ export class QuestionController {
   }
 
   /**
-   * Affiche la page d'accueil et initialise les événements
+   * Affiche la page des questions
    */
   async render() {
     try {
@@ -28,7 +28,7 @@ export class QuestionController {
       const content = this.questionView.render(featuredQuestions, featuredThemes);
       this.app.innerHTML = this.layout.wrap(content);
     } catch (error) {
-      console.error("Erreur lors du rendu de la page d'accueil:", error);
+      console.error("Erreur lors du rendu de la page des questions:", error);
       this.app.innerHTML = this.view.renderError();
     }
   }

@@ -26,7 +26,7 @@ export class FooterView {
       return `
               <footer class="site-footer">
                   <div class="footer-content">
-                      <p>&copy; ${new Date().getFullYear()} &copy; DxY. Tous droits réservés.</p>
+                      <p>&copy; ${new Date().getFullYear()} DxY. Tous droits réservés.</p>
                   </div>
               </footer>
           `;

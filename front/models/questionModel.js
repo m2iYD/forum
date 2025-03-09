@@ -43,4 +43,30 @@ export class Question {
         )
     );
   }
+
+  async findById(id) {
+    const token = localStorage.getItem("access_token");
+    const response = await fetch(`${this.apiUrl}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Question not found");
+    }
+
+    const data = await response.json();
+    return new Question(
+      data.id_question,
+      data.content,
+      data.author,
+      data.theme,
+      data.created_at,
+      data.updated_at,
+      data.answers || []
+    );
+  }
 }

@@ -26,7 +26,7 @@ export class HeaderView {
       const currentPath = window.location.pathname;
       return `
               <header class="site-header">
-                  <h1>QA - Forum</h1>
+                  <h1 class="site-brand">QA - Forum</h1>
                   <nav class="container">
                       <div class="nav-group">
                           <a href="/" class="nav-link ${

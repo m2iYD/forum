@@ -21,9 +21,9 @@ export function renderFeaturedQuestions(questions) {
   return questions
     .map(
       (question) => `
-            <a href="detail.html?id=${
+            <a href="/questions/${
               question.id_question
-            }" class="question-card">
+            }" class="question-card" data-link>
                 <div class="question-header">
                     <span class="author">${
                       question.author.lastname + " " + question.author.firstname
